@@ -13,10 +13,10 @@ data "template_file" "user_data" {
  * Create Launch Configuration
  */
 resource "aws_launch_configuration" "lc" {
-  image_id             = "${data.aws_ami.ecs_ami.id}"
+  image_id             = "${var.lc_ecs_ami_id}"
   name_prefix          = "${var.cluster_name}"
   instance_type        = "${var.instance_type}"
-  iam_instance_profile = "${aws_iam_instance_profile.ecsInstanceProfile.id}"
+  iam_instance_profile = "${var.aws_IamInstanceProfile}"
   security_groups      = ["${var.security_groups}"]
   user_data            = "${var.user_data != "false" ? var.user_data : data.template_file.user_data.rendered}"
   key_name             = "${var.ssh_key_name}"
@@ -139,7 +139,7 @@ variable "subnet_ids" {
 
 // Optional:
 variable "instance_type" {
-  default     = "t2.micro"
+  default     = "t2.medium"
   description = "See: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#AvailableInstanceTypes"
 }
 
@@ -153,7 +153,7 @@ variable "root_volume_size" {
 }
 
 variable "min_size" {
-  default = "1"
+  default = "3"
 }
 
 variable "max_size" {
@@ -245,6 +245,6 @@ variable "alarm_actions_enabled" {
 }
 
 variable "ssh_key_name" {
-  default     = ""
+  default     = "cp-devops"
   description = "Name of SSH key pair to use as default (ec2-user) user key"
 }

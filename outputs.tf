@@ -22,14 +22,14 @@ output "ecs_cluster_name" {
   value = "${aws_ecs_cluster.ecs_cluster.name}"
 }
 
-output "ecs_instance_profile_id" {
-  value = "${aws_iam_instance_profile.ecsInstanceProfile.id}"
-}
-
-output "ecsInstanceRole_arn" {
-  value = "${aws_iam_role.ecsInstanceRole.arn}"
-}
-
-output "ecsServiceRole_arn" {
-  value = "${aws_iam_role.ecsServiceRole.arn}"
-}
+# output "ecs_instance_profile_id" {
+#   value = "${aws_iam_instance_profile.ecsInstanceProfile.id}"
+# }
+#
+# output "ecsInstanceRole_arn" {
+#   value = "${aws_iam_role.ecsInstanceRole.arn}"
+# }
+#
+# output "ecsServiceRole_arn" {
+#   value = "${aws_iam_role.ecsServiceRole.arn}"
+# }
