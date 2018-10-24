@@ -6,6 +6,9 @@ data "template_file" "user_data" {
 
   vars {
     ecs_cluster_name = "${var.cluster_name}"
+    ecs_private_registry = "${var.private_registry}"
+    ecs_private_registry_username = "${var.private_registry_username}"
+    ecs_private_registry_password = "${var.private_registry_password}"
   }
 }
 
@@ -13,7 +16,7 @@ data "template_file" "user_data" {
  * Create Launch Configuration
  */
 resource "aws_launch_configuration" "lc" {
-  image_id             = "${var.lc_ecs_ami_id}"
+  image_id             = "${data.aws_ami.ecs_ami.id}"
   name_prefix          = "${var.cluster_name}"
   instance_type        = "${var.instance_type}"
   iam_instance_profile = "${var.aws_IamInstanceProfile}"
@@ -46,7 +49,7 @@ resource "aws_autoscaling_group" "asg" {
 
   tags = ["${concat(
     list(
-      map("key", "ecs_cluster", "value", var.cluster_name, "propagate_at_launch", true)
+      map("key", "Name", "value", var.cluster_name, "propagate_at_launch", true)
     ),
     var.tags
   )}"]
@@ -153,7 +156,7 @@ variable "root_volume_size" {
 }
 
 variable "min_size" {
-  default = "3"
+  default = "4"
 }
 
 variable "max_size" {

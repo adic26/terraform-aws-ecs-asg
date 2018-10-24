@@ -22,6 +22,10 @@ output "ecs_cluster_name" {
   value = "${aws_ecs_cluster.ecs_cluster.name}"
 }
 
+output "elb_dns_name" {
+  value = "${aws_elb.opsvr.dns_name}"
+}
+
 # output "ecs_instance_profile_id" {
 #   value = "${aws_iam_instance_profile.ecsInstanceProfile.id}"
 # }
