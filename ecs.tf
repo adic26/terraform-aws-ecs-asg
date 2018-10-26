@@ -159,171 +159,25 @@ resource "random_id" "code" {
 *  Create ECS Task Definition - Backend Services
 */
 # Simply specify the family to find the latest ACTIVE revision in that family.
+data "template_file" "opsvrweb" {
+  template = "${file("${path.module}/templates/opsvr_ecs_task.tpl")}"
+
+  vars {
+    opsvr_app_key = "${var.opsvr_app_key}"
+    mailtrap_password = "${var.mailtrap_password}"
+    mailtrap_username = "${var.mailtrap_username}"
+    mongo_audit_dsn = "${var.mongo_audit_dsn}"
+    mongo_dsn = "${var.mongo_dsn}"
+    opsvr_image = "${var.opsvr_image}"
+  }
+}
 data "aws_ecs_task_definition" "opsvrweb" {
   task_definition = "${aws_ecs_task_definition.opsvrweb.family}"
 }
 
 resource "aws_ecs_task_definition" "opsvrweb" {
   family = "opsvr-${var.cluster_name}-web"
-
-  container_definitions = <<EOF
-[
-  {
-    "memory": 800,
-    "logConfiguration": {
-      "logDriver": "syslog",
-      "options": {
-        "syslog-address": "udp://logs6.papertrailapp.com:13812",
-        "tag": "{{.Name}}"
-      }
-    },
-    "environment": [{
-        "name": "APP_DEBUG",
-        "value": "1"
-      },
-      {
-        "name": "APP_ENV",
-        "value": "sit"
-      },
-      {
-        "name": "APP_KEY",
-        "value": "${var.opsvr_app_key}"
-      },
-      {
-        "name": "APP_LOG",
-        "value": "syslog"
-      },
-      {
-        "name": "AUDIT_DEBUG",
-        "value": "0"
-      },
-      {
-        "name": "AUDIT_DIRECT_DB_WRITES",
-        "value": "0"
-      },
-      {
-        "name": "AUDIT_KINESIS_REGION",
-        "value": "us-east-1"
-      },
-      {
-        "name": "AUDIT_KINESIS_VERSION",
-        "value": "2013-12-02"
-      },
-      {
-        "name": "AUDIT_SHARD_BUCKETS",
-        "value": "5"
-      },
-      {
-        "name": "AUDIT_STATE",
-        "value": "0"
-      },
-      {
-        "name": "ES_DSN1",
-        "value": "http://172.31.3.106:9200"
-      },
-      {
-        "name": "ES_DSN2",
-        "value": ""
-      },
-      {
-        "name": "INTERNAL_AUTH_APP",
-        "value": ""
-      },
-      {
-        "name": "INTERNAL_AUTH_KEY",
-        "value": ""
-      },
-      {
-        "name": "INTERNAL_AUTH_SIG",
-        "value": ""
-      },
-      {
-        "name": "LEGACY_DB_HOST",
-        "value": ""
-      },
-      {
-        "name": "LEGACY_DB_NAME",
-        "value": ""
-      },
-      {
-        "name": "LEGACY_DB_PASS",
-        "value": ""
-      },
-      {
-        "name": "LEGACY_DB_USER",
-        "value": ""
-      },
-      {
-        "name": "MAIL_HOST",
-        "value": "smtp.mailtrap.io"
-      },
-      {
-        "name": "MAIL_PASSWORD",
-        "value": "${var.mailtrap_password}"
-      },
-      {
-        "name": "MAIL_PORT",
-        "value": "2525"
-      },
-      {
-        "name": "MAIL_USERNAME",
-        "value": "${var.mailtrap_username}"
-      },
-      {
-        "name": "MANDRILL_SECRET",
-        "value": ""
-      },
-      {
-        "name": "MONGO_AUDIT_DB_NAME",
-        "value": "audit-trail"
-      },
-      {
-        "name": "MONGO_AUDIT_DSN",
-        "value": "${var.mongo_audit_dsn}"
-      },
-      {
-        "name": "MONGO_DB_NAME",
-        "value": "sit-opsserver"
-      },
-      {
-        "name": "MONGO_DSN",
-        "value": "${var.mongo_dsn}"
-      },
-      {
-        "name": "NEWRELIC_APP",
-        "value": "Ops Server [sit]"
-      },
-      {
-        "name": "QUEUE_DRIVER",
-        "value": "mongodb"
-      },
-      {
-        "name": "QUEUE_ENV",
-        "value": "sit"
-      },
-      {
-        "name": "REDIS_DSN",
-        "value": "tcp://172.31.3.106:6379"
-      },
-      {
-        "name": "SYSLOG_HOST",
-        "value": "logs6.papertrailapp.com"
-      },
-      {
-        "name": "SYSLOG_PORT",
-        "value": "22002"
-      }
-    ],
-    "portMappings": [{
-      "hostPort": 8088,
-      "protocol": "tcp",
-      "containerPort": 8088
-    }],
-    "image": "${var.opsvr_image}",
-    "name": "web"
-  }
-]
-EOF
+  container_definitions = "${data.template_file.opsvrweb.rendered}"
 }
 
 # Create a new load balancer
