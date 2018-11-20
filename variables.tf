@@ -40,9 +40,6 @@ variable "opsvr_image" {
 variable "mongo_audit_dsn" {
   type = "string"
 }
-variable "mongo_dsn" {
-  type = "string"
-}
 variable "opsvr_app_key" {
   type = "string"
 }
