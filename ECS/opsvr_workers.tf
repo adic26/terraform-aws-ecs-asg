@@ -1,5 +1,5 @@
 module "allocation" {
-  source = "../module.terraform-opsvr-workers"
+  source = "../../module.terraform-opsvr-workers"
   cluster_name = "${var.cluster_name}"
   cluster_id = "${aws_ecs_cluster.ecs_cluster.id}"
   fam_worker_type = "worker-general-allocation"
@@ -14,7 +14,7 @@ module "allocation" {
 }
 
 module "autodel" {
-  source = "../module.terraform-opsvr-workers"
+  source = "../../module.terraform-opsvr-workers"
   cluster_name = "${var.cluster_name}"
   cluster_id = "${aws_ecs_cluster.ecs_cluster.id}"
   fam_worker_type = "worker-autodel"
@@ -29,7 +29,7 @@ module "autodel" {
 }
 
 module "high" {
-  source = "../module.terraform-opsvr-workers"
+  source = "../../module.terraform-opsvr-workers"
   cluster_name = "${var.cluster_name}"
   cluster_id = "${aws_ecs_cluster.ecs_cluster.id}"
   queue_worker_type = "opsvr-${var.cluster_name}-high-priority"
@@ -44,7 +44,7 @@ module "high" {
 }
 
 module "med-low" {
-  source = "../module.terraform-opsvr-workers"
+  source = "../../module.terraform-opsvr-workers"
   cluster_name = "${var.cluster_name}"
   cluster_id = "${aws_ecs_cluster.ecs_cluster.id}"
   queue_worker_type = "opsvr-${var.cluster_name}-med-priority,opsvr-${var.cluster_name}-low-priority"

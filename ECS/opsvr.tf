@@ -42,3 +42,15 @@ resource "aws_ecs_service" "opsvrweb" {
     "aws_elb.opsvr"
   ]
 }
+
+resource "aws_route53_record" "opsvr" {
+  zone_id = "Z2MTCF61RL4A9K"
+  name    = "${var.cluster_name}-api.chefsplateops.net"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_elb.opsvr.dns_name}"
+    zone_id                = "${aws_elb.opsvr.zone_id}"
+    evaluate_target_health = true
+  }
+}

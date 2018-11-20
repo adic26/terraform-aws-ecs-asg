@@ -5,11 +5,11 @@ provider "aws" {
 }
 
 terraform {
-  required_version = ">= 0.11.9"
+  required_version = ">= 0.11.10"
 
   backend "s3" {
     bucket = "cpweb-tf-state-backend"
-    key = "test/ecs-asg"
+    key = "test/ecs-asg-mongodb"
     region = "us-east-1"
     encrypt = "true"
   }

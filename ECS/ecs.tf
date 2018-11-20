@@ -155,26 +155,121 @@ resource "random_id" "code" {
 # EOF
 # }
 
-
-
 # Create a new load balancer
 resource "aws_elb" "opsvr" {
   name               = "opsvr-${var.cluster_name}-elb"
-  availability_zones = ["us-east-1a", "us-east-1c", "us-east-1e", "us-east-1d"]
-  security_groups    = ["${var.security_groups}"]
-
+  # availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  subnets            = ["${var.private_subnet_ids}"]
+  security_groups    = ["${aws_security_group.lb_opsvr.id}"]
+  internal           = true
 
   listener {
     instance_port      = 8088
     instance_protocol  = "http"
     lb_port            = 8088
     lb_protocol        = "https"
-    ssl_certificate_id = "arn:aws:acm:us-east-1:918758342401:certificate/91b59ced-1cbb-4c78-a0e6-1d57371842e0"
+    ssl_certificate_id = "arn:aws:acm:us-east-1:918758342401:certificate/55fa4440-3799-425f-8da5-cc450d673755"
   }
 
-  cross_zone_load_balancing   = true
+  cross_zone_load_balancing = true
 
   tags {
     Name = "elb-${var.cluster_name}"
   }
+}
+
+resource "aws_security_group" "lb_opsvr" {
+  name        = "opsvr-elb-sg"
+  description = "Security Group Backend Load Balancer"
+  vpc_id      = "${var.vpc_id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_security_group_rule" "opsvr_allow_only_vpc" {
+  type              = "ingress"
+  from_port         = 8088
+  to_port           = 8088
+  protocol          = "tcp"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${aws_security_group.lb_opsvr.id}"
+}
+
+resource "aws_security_group_rule" "opsvr_allow_all_outbound" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.lb_opsvr.id}"
+}
+
+
+
+resource "aws_elb" "cpweb" {
+  name               = "cpweb-${var.cluster_name}-elb"
+  # availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  subnets            = ["${var.public_subnet_ids}"]
+  security_groups    = ["${aws_security_group.lb_cpweb.id}"]
+  internal           = false
+
+  listener = [{
+      instance_port      = 7777
+      instance_protocol  = "http"
+      lb_port            = 80
+      lb_protocol        = "http"
+    },
+    {
+      instance_port      = 7777
+      instance_protocol  = "http"
+      lb_port            = 443
+      lb_protocol        = "https"
+      ssl_certificate_id = "arn:aws:acm:us-east-1:918758342401:certificate/55fa4440-3799-425f-8da5-cc450d673755"
+    }
+  ]
+
+  cross_zone_load_balancing = true
+
+  tags {
+    Name = "elb-${var.cluster_name}"
+  }
+}
+
+resource "aws_security_group" "lb_cpweb" {
+  name        = "cpweb-elb-sg"
+  description = "Security Group Backend Load Balancer"
+  vpc_id      = "${var.vpc_id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_security_group_rule" "cpweb_allow_http" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.lb_cpweb.id}"
+}
+
+resource "aws_security_group_rule" "cpweb_allow_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.lb_cpweb.id}"
+}
+
+resource "aws_security_group_rule" "cpweb_allow_all_outbound" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.lb_cpweb.id}"
 }

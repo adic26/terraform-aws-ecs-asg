@@ -1,30 +1,50 @@
-output "asg_id" {
-  value = "${aws_autoscaling_group.asg.id}"
-}
-
-output "asg_arn" {
-  value = "${aws_autoscaling_group.asg.arn}"
-}
-
-output "asg_launch_configuration" {
-  value = "${aws_autoscaling_group.asg.launch_configuration}"
-}
-
 output "ecs_ami_id" {
-  value = "${data.aws_ami.ecs_ami.id}"
+  value = "${module.ecs_cluster.ecs_ami_id}"
 }
 
 output "ecs_cluster_id" {
-  value = "${aws_ecs_cluster.ecs_cluster.id}"
+  value = "${module.ecs_cluster.ecs_cluster_id}"
 }
 
 output "ecs_cluster_name" {
-  value = "${aws_ecs_cluster.ecs_cluster.name}"
+  value = "${module.ecs_cluster.ecs_cluster_name}"
 }
 
 output "elb_dns_name" {
-  value = "${aws_elb.opsvr.dns_name}"
+  value = "${module.ecs_cluster.elb_dns_name}"
 }
+
+output "route53_frontend_url" {
+  value = "${module.ecs_cluster.route53_frontend_url}"
+}
+
+output "route53_backend_url" {
+  value = "${module.ecs_cluster.route53_backend_url}"
+}
+
+output "asg_id" {
+  value = "${module.ASG.asg_id}"
+}
+
+output "asg_arn" {
+  value = "${module.ASG.asg_arn}"
+}
+
+output "asg_launch_configuration" {
+  value = "${module.ASG.asg_launch_configuration}"
+}
+
+output "mongo_public_ips" {
+  value = "${module.MONGO.mongo_public_ips}"
+}
+
+output "mongo_private_ips" {
+  value = "${module.MONGO.mongo_private_ips}"
+}
+
+
+
+
 
 # output "ecs_instance_profile_id" {
 #   value = "${aws_iam_instance_profile.ecsInstanceProfile.id}"
