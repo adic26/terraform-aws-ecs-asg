@@ -58,7 +58,7 @@ resource "null_resource" "provision" {
 
   connection {
     host        = "${element(var.public_ips, count.index)}"
-    user        = "${var.ami_username}"
+    user        = "ec2-user"
     # private_key = "${file("${var.key_path}")}"
   }
   # copy provisioning files
