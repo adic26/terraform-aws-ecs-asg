@@ -20,7 +20,7 @@ module "ec2_instances" {
   region         = "${var.region}"
   owner          = "${var.cluster_name}"
   key_name       = "${var.key_name}"
-  # key_path       = "${var.key_path}"
+  key_path       = "${var.key_path}"
   security_group = "${module.vpc.opsmgr_sg}"
   subnet_ids     = ["${var.public_subnet_ids}"]
   zones          = "3"
@@ -38,7 +38,7 @@ module "mongodb" {
   source         = "./mongodb"
   region         = "${var.region}"
   key_name       = "${var.key_name}"
-  # key_path       = "${var.key_path}"
+  key_path       = "${var.key_path}"
   ami_username   = "${module.ec2_ami.ami_username}"
   replset        = "${var.replset}"
   servers        = "${var.servers}"

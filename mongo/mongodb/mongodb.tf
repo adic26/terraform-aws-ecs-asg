@@ -10,9 +10,9 @@ variable "key_name" {
   description = "SSH key name in your AWS account for AWS instances."
 }
 
-# variable "key_path" {
-#   description = "Path to the private key specified by key_name."
-# }
+variable "key_path" {
+  description = "Path to the private key specified by key_name."
+}
 
 variable "ami_username" {
   description = "the username to use to ssh to the EC2 instance"
@@ -86,7 +86,7 @@ resource "null_resource" "bootstrap" {
   connection {
     host        = "${element(var.public_ips, 0)}"
     user        = "${var.ami_username}"
-    # private_key = "${file("${var.key_path}")}"
+    private_key = "${file("${var.key_path}")}"
   }
 
   # bootstrap script
