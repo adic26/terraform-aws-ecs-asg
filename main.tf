@@ -10,7 +10,7 @@ module "ecs_cluster" {
   mailtrap_password         = "${var.mailtrap_password}"
   mailtrap_username         = "${var.mailtrap_username}"
   mongo_audit_dsn           = "${var.mongo_audit_dsn}"
-  mongo_dsn                 = "mongodb://${var.replset}/${join(":27017,", module.MONGO.mongo_private_ips)}:27017"
+  mongo_dsn                 = "mongodb://${join(":27017,", module.MONGO.mongo_private_ips)}:27017/?replicaSet=${var.replset}"
   opsvr_image               = "${var.opsvr_image}"
   aws_IamInstanceProfile    = "${var.aws_IamInstanceProfile}"
   private_registry          = "${var.private_registry}"
