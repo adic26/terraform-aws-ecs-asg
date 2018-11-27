@@ -46,6 +46,10 @@ output "mongo_dsn" {
   value = "mongodb://${join(":27017,", module.MONGO.mongo_private_ips)}:27017/?replicaSet=${var.replset}"
 }
 
+output "opsvr_worker_autodel" {
+  value = "${module.ecs_cluster.opsvr_worker_autodel}"
+}
+
 
 
 

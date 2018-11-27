@@ -41,3 +41,7 @@ variable "fam_worker_type" {
 variable "queue_worker_type" {
   type = "string"
 }
+
+output "queue_worker_type" {
+  value = "${var.queue_worker_type}"
+}

@@ -21,3 +21,7 @@ output "route53_frontend_url" {
 output "route53_backend_url" {
   value = "${aws_route53_record.opsvr.name}"
 }
+
+output "opsvr_worker_autodel" {
+  value = "${module.autodel.queue_worker_type}"
+}
