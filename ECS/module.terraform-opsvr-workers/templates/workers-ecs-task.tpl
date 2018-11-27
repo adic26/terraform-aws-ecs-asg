@@ -7,7 +7,7 @@
     "logConfiguration": {
       "logDriver": "syslog",
       "options": {
-        "syslog-address": "udp://logs6.papertrailapp.com:13812",
+        "syslog-address": "udp://logs7.papertrailapp.com:54850",
         "tag": "{{.Name}}"
       }
     },
