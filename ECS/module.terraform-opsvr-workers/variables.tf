@@ -43,5 +43,5 @@ variable "queue_worker_type" {
 }
 
 output "queue_worker_type" {
-  value = "${var.queue_worker_type}"
+  value = "${aws_ecs_task_definition.opsvr_workers.family}"
 }
