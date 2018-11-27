@@ -20,7 +20,7 @@ resource "aws_launch_configuration" "public_lc" {
 }
 
 resource "aws_security_group" "public_ec2s" {
-  name = "web2-ec2-sg-1"
+  name = "web2-ec2-sg-${var.cluster_name}"
   description = "Security Group Frontend Load Balancer"
   vpc_id = "${var.vpc_id}"
 

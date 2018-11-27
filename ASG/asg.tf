@@ -34,7 +34,7 @@ resource "aws_launch_configuration" "lc" {
 }
 
 resource "aws_security_group" "backend_ec2s" {
-  name = "opsvr-ec2-sg"
+  name = "opsvr-ec2-sg-${var.cluster_name}"
   description = "Security Group Backend Load Balancer"
   vpc_id = "${var.vpc_id}"
 
@@ -48,6 +48,15 @@ resource "aws_security_group_rule" "allow_all_http" {
   type              = "ingress"
   from_port         = 8088
   to_port           = 8088
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.backend_ec2s.id}"
+}
+
+resource "aws_security_group_rule" "allow_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.backend_ec2s.id}"
