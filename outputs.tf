@@ -42,6 +42,10 @@ output "mongo_private_ips" {
   value = "${module.MONGO.mongo_private_ips}"
 }
 
+output "mongo_dsn" {
+  value = "mongodb://${join(":27017,", module.MONGO.mongo_private_ips)}:27017/?replicaSet=${var.replset}"
+}
+
 
 
 
