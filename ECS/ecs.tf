@@ -179,7 +179,7 @@ resource "aws_elb" "opsvr" {
 }
 
 resource "aws_security_group" "lb_opsvr" {
-  name        = "opsvr-elb-sg"
+  name        = "${var.cluster_name}-elbsg-BE"
   description = "Security Group Backend Load Balancer"
   vpc_id      = "${var.vpc_id}"
 
@@ -238,7 +238,7 @@ resource "aws_elb" "cpweb" {
 }
 
 resource "aws_security_group" "lb_cpweb" {
-  name        = "cpweb-elb-sg"
+  name        = "${var.cluster_name}-elbsg-FE"
   description = "Security Group Backend Load Balancer"
   vpc_id      = "${var.vpc_id}"
 

@@ -30,7 +30,7 @@ provider "aws" {
 # }
 
 resource "aws_security_group" "mongo" {
-  name        = "${var.tag_name}-mongo-sg"
+  name        = "mongo-sg-${var.owner}"
   description = "open mongo outbound"
   vpc_id      = "${var.vpc_id}"
 
@@ -58,7 +58,7 @@ resource "aws_security_group" "mongo" {
 }
 
 resource "aws_security_group" "opsmgr" {
-  name        = "${var.tag_name}-opsmgr-sg"
+  name        = "opsmgr-sg-${var.owner}"
   description = "open opsmgr outbound"
   vpc_id      = "${var.vpc_id}"
 

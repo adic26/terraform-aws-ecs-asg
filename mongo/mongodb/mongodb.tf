@@ -52,10 +52,6 @@ resource "template_dir" "config" {
 resource "null_resource" "provision" {
   count = "${var.servers}"
 
-  #  triggers {
-  #    volume_attachment = "${join(",", aws_volume_attachment.data.*.id)}"
-  #  }
-
   connection {
     host        = "${element(var.public_ips, count.index)}"
     user        = "ec2-user"
