@@ -101,4 +101,6 @@ resource "null_resource" "bootstrap" {
       "/tmp/scripts/restoredb.sh ${var.replset} ${join(" ", var.private_ips)}"
     ]
   }
+
+  depends_on = [ "null_resource.provision"]
 }
