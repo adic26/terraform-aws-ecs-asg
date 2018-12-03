@@ -43,6 +43,63 @@ resource "aws_ecs_service" "opsvrweb" {
   ]
 }
 
+
+#
+# Application AutoScaling resources
+#
+resource "aws_appautoscaling_target" "opsvrweb" {
+  service_namespace  = "ecs"
+  resource_id        = "service/${var.cluster_name}/${aws_ecs_service.opsvrweb.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  min_capacity       = "1"
+  max_capacity       = "6"
+
+  depends_on = [
+    "aws_ecs_service.opsvrweb",
+  ]
+}
+
+resource "aws_appautoscaling_policy" "opsvrwebUp" {
+  name               = "${var.cluster_name}appScalingPolicyOPSVRWebScaleUp"
+  service_namespace  = "ecs"
+  resource_id        = "service/${var.cluster_name}/${aws_ecs_service.opsvrweb.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = "120"
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment          = 1
+    }
+  }
+
+  depends_on = [
+    "aws_appautoscaling_target.opsvrweb",
+  ]
+}
+
+resource "aws_cloudwatch_metric_alarm" "opsvr_service_high_cpu" {
+  alarm_name          = "${var.cluster_name}OPSVRWebScaleUp"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "60"
+
+  dimensions {
+    ClusterName = "${var.cluster_name}"
+    ServiceName = "${aws_ecs_service.opsvrweb.name}"
+  }
+
+  alarm_description = "This metric monitors ecs cpu utilization"
+  alarm_actions = ["${aws_appautoscaling_policy.opsvrwebUp.arn}"]
+}
+
 resource "aws_route53_record" "opsvr" {
   zone_id = "Z2MTCF61RL4A9K"
   name    = "${var.cluster_name}-api.chefsplateops.net"

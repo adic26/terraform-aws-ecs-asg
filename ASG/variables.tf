@@ -67,12 +67,12 @@ variable "alarm_period" {
 }
 
 variable "alarm_threshold_up" {
-  default     = "100"
+  default     = "60"
   description = "The value against which the specified statistic is compared."
 }
 
 variable "alarm_threshold_down" {
-  default     = "50"
+  default     = "40"
   description = "The value against which the specified statistic is compared."
 }
 

@@ -1,0 +1,24 @@
+{
+  "freebies": {
+    "branches": {
+      "opsvr": "master",
+      "web2": "master",
+      "omc": "master"
+    },
+    "opsvrSchema": {
+      "branch": "master",
+      "files": []
+    }
+  },
+  "recipe-scores": {
+    "branches": {
+      "opsvr": "feature/recipe-scoring",
+      "web2": "feature/recipe-scores",
+      "omc": "master"
+    },
+    "opsvrSchema": {
+      "branch": "master",
+      "files": []
+    }
+  }
+}
